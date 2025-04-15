@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FLAPPY TURD</title>
+  <style>
+    body { margin: 0; font-family: sans-serif; background: #87CEEB; overflow: hidden; }
+    canvas { display: block; margin: 0 auto; background: #a3d6ff; }
+    #loading { position: absolute; width: 100%; text-align: center; top: 40%; font-size: 1.5em; color: #333; }
+  </style>
+</head>
+<body>
+  <div id="loading">Hold tight — the turd is nearly airborne...</div>
+  <canvas id="gameCanvas" width="400" height="600"></canvas>
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    document.getElementById('loading').style.display = 'none';
+
+    let turdY = 300, velocity = 0, gravity = 0.4, lift = -7;
+    let score = 0, longestStreak = localStorage.getItem('longestStreak') || 0;
+    let obstacles = [], frame = 0, gameOver = false;
+
+    document.addEventListener('keydown', flap);
+    document.addEventListener('touchstart', flap);
+
+    function flap() {
+      if (gameOver) location.reload();
+      velocity = lift;
+    }
+
+    function addObstacle() {
+      const gap = 130;
+      const top = Math.random() * 200 + 50;
+      obstacles.push({ x: canvas.width, top, bottom: top + gap });
+    }
+
+    function update() {
+      if (gameOver) return;
+      velocity += gravity;
+      turdY += velocity;
+      frame++;
+
+      if (frame % 100 === 0) addObstacle();
+
+      obstacles.forEach(o => o.x -= 2);
+
+      for (let obs of obstacles) {
+        if (obs.x < 95 && obs.x + 40 > 65 && (turdY < obs.top || turdY > obs.bottom)) {
+          gameOver = true;
+        }
+      }
+
+      if (turdY < 0 || turdY > canvas.height) gameOver = true;
+      if (!gameOver) score++;
+    }
+
+    function draw() {
+      let hour = Math.floor(score / 100) % 24;
+      ctx.fillStyle = hour >= 6 && hour < 18 ? '#87CEEB' : '#1c1c3c';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = '#000';
+      ctx.font = '20px sans-serif';
+      ctx.fillText("Streak: " + score, 10, 30);
+      ctx.fillText("Longest: " + longestStreak, 10, 60);
+
+      ctx.fillStyle = '#5b3a29';
+      ctx.beginPath();
+      ctx.arc(80, turdY, 15, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#333';
+      for (let obs of obstacles) {
+        ctx.fillRect(obs.x, 0, 40, obs.top);
+        ctx.fillRect(obs.x, obs.bottom, 40, canvas.height - obs.bottom);
+      }
+
+      if (gameOver) {
+        if (score > longestStreak) {
+          longestStreak = score;
+          localStorage.setItem('longestStreak', longestStreak);
+        }
+        ctx.fillStyle = 'red';
+        ctx.font = '30px sans-serif';
+        ctx.fillText('💥 SPLAT!', canvas.width / 2 - 60, canvas.height / 2);
+        ctx.font = '20px sans-serif';
+        ctx.fillText('Tap or Press to Restart', canvas.width / 2 - 100, canvas.height / 2 + 40);
+      }
+    }
+
+    function loop() {
+      update();
+      draw();
+      if (!gameOver) requestAnimationFrame(loop);
+    }
+
+    loop();
+  </script>
+</body>
+</html>
