@@ -57,7 +57,7 @@
 
     function addObstacle() {
       const gap = 160;
-      const top = Math.random() * (canvas.height - gap - 200) + 100;
+      const top = 0; // no longer needed
       const pipeIndex = Math.floor(Math.random() * pipeImgs.length);
       obstacles.push({
         x: canvas.width,
@@ -79,11 +79,12 @@
         let pipeX = obs.x;
         let pipeWidth = 60;
         let gap = 160;
+        const horizontalPipeBottomY = 96;
 
         if (
           120 + 30 > pipeX &&
           120 < pipeX + pipeWidth &&
-          (turdY - 15 < obs.top || turdY + 15 > obs.top + gap)
+          (turdY - 15 < horizontalPipeBottomY - 300 || turdY + 15 > horizontalPipeBottomY + gap)
         ) {
           gameOver = true;
           splatSound.play();
@@ -114,12 +115,16 @@
         const pipeWidth = 60;
         const pipeHeight = 300;
         const gap = 160;
+        const horizontalPipeBottomY = 96;
 
-        // Draw top pipe
-        ctx.drawImage(obs.img, obs.x, obs.top - pipeHeight, pipeWidth, pipeHeight);
+        // Top pipe: fixed to appear from the horizontal pipe
+        const topPipeY = horizontalPipeBottomY - pipeHeight;
 
-        // Draw bottom pipe
-        ctx.drawImage(obs.img, obs.x, obs.top + gap, pipeWidth, pipeHeight);
+        // Bottom pipe: offset by gap
+        const bottomPipeY = horizontalPipeBottomY + gap;
+
+        ctx.drawImage(obs.img, obs.x, topPipeY, pipeWidth, pipeHeight);
+        ctx.drawImage(obs.img, obs.x, bottomPipeY, pipeWidth, pipeHeight);
       }
 
       if (gameOver) {
