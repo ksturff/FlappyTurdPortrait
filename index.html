@@ -57,11 +57,9 @@
 
     function addObstacle() {
       const gap = 160;
-      const top = 0; // no longer needed
       const pipeIndex = Math.floor(Math.random() * pipeImgs.length);
       obstacles.push({
         x: canvas.width,
-        top: top,
         img: pipeImgs[pipeIndex]
       });
     }
@@ -75,16 +73,21 @@
       if (frame % 120 === 0) addObstacle();
       obstacles.forEach(o => o.x -= 2);
 
+      const pipeWidth = 60;
+      const pipeHeight = 300;
+      const gap = 160;
+      const topPipeBottomY = 96;
+
       for (let obs of obstacles) {
         let pipeX = obs.x;
-        let pipeWidth = 60;
-        let gap = 160;
-        const horizontalPipeBottomY = 96;
+
+        const topPipeY = topPipeBottomY - pipeHeight;
+        const bottomPipeY = topPipeBottomY + gap;
 
         if (
           120 + 30 > pipeX &&
           120 < pipeX + pipeWidth &&
-          (turdY - 15 < horizontalPipeBottomY - 300 || turdY + 15 > horizontalPipeBottomY + gap)
+          (turdY - 15 < topPipeY + pipeHeight || turdY + 15 > bottomPipeY)
         ) {
           gameOver = true;
           splatSound.play();
@@ -111,17 +114,14 @@
 
       ctx.drawImage(poopImg, 120, turdY - 15, 30, 30);
 
+      const pipeWidth = 60;
+      const pipeHeight = 300;
+      const gap = 160;
+      const topPipeBottomY = 96;
+
       for (let obs of obstacles) {
-        const pipeWidth = 60;
-        const pipeHeight = 300;
-        const gap = 160;
-        const horizontalPipeBottomY = 96;
-
-        // Top pipe: fixed to appear from the horizontal pipe
-        const topPipeY = horizontalPipeBottomY - pipeHeight;
-
-        // Bottom pipe: offset by gap
-        const bottomPipeY = horizontalPipeBottomY + gap;
+        const topPipeY = topPipeBottomY - pipeHeight;
+        const bottomPipeY = topPipeBottomY + gap;
 
         ctx.drawImage(obs.img, obs.x, topPipeY, pipeWidth, pipeHeight);
         ctx.drawImage(obs.img, obs.x, bottomPipeY, pipeWidth, pipeHeight);
