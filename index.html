@@ -49,6 +49,9 @@
     const poopImg = new Image(); poopImg.src = 'assets/poop.png';
     const splatImg = new Image(); splatImg.src = 'assets/splat.png';
     const splatSound = new Audio('assets/splat.mp3');
+    const ambientSound = new Audio('assets/sewerambiance.mp3');
+    ambientSound.loop = true;
+    ambientSound.volume = 0.4;
 
     const bgImg = new Image();
     bgImg.src = 'assets/sewer_tiled_3200x600.png';
@@ -119,10 +122,17 @@
         ) {
           gameOver = true;
           splatSound.play();
+          ambientSound.pause();
+          ambientSound.currentTime = 0;
         }
       }
 
-      if (turdY < 0 || turdY > canvas.height) gameOver = true;
+      if (turdY < 0 || turdY > canvas.height) {
+        gameOver = true;
+        ambientSound.pause();
+        ambientSound.currentTime = 0;
+      }
+
       if (!gameOver) score++;
 
       bgX -= 1;
@@ -183,6 +193,7 @@
     preloadAssets(() => {
       const splash = document.getElementById('loading');
       setTimeout(() => {
+        ambientSound.play().catch(e => console.warn('Audio blocked'));
         splash.style.transition = 'opacity 0.75s ease';
         splash.style.opacity = '0';
         setTimeout(() => splash.style.display = 'none', 750);
@@ -192,3 +203,4 @@
   </script>
 </body>
 </html>
+
