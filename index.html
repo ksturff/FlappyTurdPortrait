@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,13 +37,12 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
 
-    // Resize canvas to fit window
     function resizeCanvas() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     }
     window.addEventListener('resize', resizeCanvas);
-    resizeCanvas(); // call once on load
+    resizeCanvas();
 
     const poopImg = new Image(); poopImg.src = 'assets/poop.png';
     const splatImg = new Image(); splatImg.src = 'assets/splat.png';
@@ -86,10 +84,10 @@
 
     function addObstacle() {
       const pipeIndex = Math.floor(Math.random() * pipeImgs.length);
-      const pipeWidth = 60;
-      const gapHeight = 150;
-      const topPipeY = 60;
-      const topPipeHeight = Math.floor(Math.random() * 200) + 100;
+      const pipeWidth = Math.floor(canvas.width * 0.06);
+      const gapHeight = Math.floor(canvas.height * 0.25);
+      const topPipeY = Math.floor(canvas.height * 0.05);
+      const topPipeHeight = Math.floor(Math.random() * (canvas.height * 0.3)) + (canvas.height * 0.1);
       const bottomPipeY = topPipeY + topPipeHeight + gapHeight;
 
       obstacles.push({
@@ -187,3 +185,4 @@
   </script>
 </body>
 </html>
+
