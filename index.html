@@ -48,13 +48,14 @@
 
     const poopImg = new Image(); poopImg.src = 'assets/poop.png';
     const splatImg = new Image(); splatImg.src = 'assets/splat.png';
+    const bgImg = new Image(); bgImg.src = 'assets/sewer_tiled_3200x600.png';
+
     const splatSound = new Audio('assets/splat.mp3');
+    const fartSound = new Audio('assets/fart.mp3');
     const ambientSound = new Audio('assets/sewerambiance.mp3');
     ambientSound.loop = true;
     ambientSound.volume = 0.4;
 
-    const bgImg = new Image();
-    bgImg.src = 'assets/sewer_tiled_3200x600.png';
     let bgX = 0;
 
     const pipeImgs = ['Pipe1.png','Pipe2.png','Pipe3.png','Pipe4.png','Pipe5.png','Pipe6.png'].map(src => {
@@ -85,6 +86,8 @@
     function flap() {
       if (gameOver) location.reload();
       velocity = lift;
+      fartSound.currentTime = 0;
+      fartSound.play().catch(e => console.warn('Fart blocked'));
     }
 
     function addObstacle() {
