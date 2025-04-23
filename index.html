@@ -21,16 +21,18 @@
     #loading {
       position: absolute;
       width: 100%;
-      text-align: center;
-      top: 40%;
-      font-size: 1.5em;
-      color: #fff;
+      height: 100%;
+      top: 0;
+      left: 0;
+      background: url('assets/splash.png') no-repeat center center;
+      background-size: cover;
       z-index: 10;
+      opacity: 1;
     }
   </style>
 </head>
 <body>
-  <div id="loading">Loading Flappy Turd...</div>
+  <div id="loading"></div>
   <canvas id="gameCanvas"></canvas>
 
   <script>
@@ -179,10 +181,12 @@
     }
 
     preloadAssets(() => {
-      document.getElementById('loading').style.display = 'none';
+      const splash = document.getElementById('loading');
+      splash.style.transition = 'opacity 0.5s ease';
+      splash.style.opacity = '0';
+      setTimeout(() => splash.style.display = 'none', 500);
       loop();
     });
   </script>
 </body>
 </html>
-
