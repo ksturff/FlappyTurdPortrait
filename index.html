@@ -4,18 +4,47 @@
 <head>
   <meta charset="UTF-8">
   <title>FLAPPY TURD</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <style>
-    body { margin: 0; background: #000; overflow: hidden; }
-    canvas { display: block; margin: 0 auto; background: #000; }
-    #loading { position: absolute; width: 100%; text-align: center; top: 40%; font-size: 1.5em; color: #fff; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      height: 100%;
+      background: #000;
+    }
+    canvas {
+      display: block;
+      background: #000;
+      width: 100vw;
+      height: 100vh;
+    }
+    #loading {
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      top: 40%;
+      font-size: 1.5em;
+      color: #fff;
+      z-index: 10;
+    }
   </style>
 </head>
 <body>
   <div id="loading">Loading Flappy Turd...</div>
-  <canvas id="gameCanvas" width="1076" height="600"></canvas>
+  <canvas id="gameCanvas"></canvas>
+
   <script>
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
+
+    // Resize canvas to fit window
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas(); // call once on load
 
     const poopImg = new Image(); poopImg.src = 'assets/poop.png';
     const splatImg = new Image(); splatImg.src = 'assets/splat.png';
@@ -29,7 +58,7 @@
       const img = new Image(); img.src = 'assets/' + src; return img;
     });
 
-    let turdY = 300, velocity = 0, gravity = 0.4, lift = -7;
+    let turdY = canvas.height / 2, velocity = 0, gravity = 0.4, lift = -7;
     let score = 0, longestStreak = localStorage.getItem('longestStreak') || 0;
     let obstacles = [], frame = 0, gameOver = false;
 
@@ -103,10 +132,9 @@
     }
 
     function draw() {
-      ctx.drawImage(bgImg, bgX, 0);
-      ctx.drawImage(bgImg, bgX + bgImg.width, 0);
+      ctx.drawImage(bgImg, bgX, 0, bgImg.width, canvas.height);
+      ctx.drawImage(bgImg, bgX + bgImg.width, 0, bgImg.width, canvas.height);
 
-      // Updated font: bold and slightly larger
       ctx.fillStyle = '#e0dcb7';
       ctx.font = 'bold 16px Comic Sans MS';
       const textRightX = canvas.width - 150;
@@ -116,10 +144,8 @@
       ctx.drawImage(poopImg, 120, turdY - 15, 30, 30);
 
       for (let obs of obstacles) {
-        // Top Pipe
         ctx.drawImage(obs.img, obs.x, obs.topY, obs.width, obs.topHeight);
 
-        // Bottom Pipe (flipped)
         ctx.save();
         ctx.translate(obs.x + obs.width / 2, obs.bottomY + (canvas.height - obs.bottomY) / 2);
         ctx.scale(1, -1);
