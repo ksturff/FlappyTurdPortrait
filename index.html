@@ -182,10 +182,12 @@
 
     preloadAssets(() => {
       const splash = document.getElementById('loading');
-      splash.style.transition = 'opacity 0.5s ease';
-      splash.style.opacity = '0';
-      setTimeout(() => splash.style.display = 'none', 500);
-      loop();
+      setTimeout(() => {
+        splash.style.transition = 'opacity 0.75s ease';
+        splash.style.opacity = '0';
+        setTimeout(() => splash.style.display = 'none', 750);
+        loop();
+      }, 1500);
     });
   </script>
 </body>
